@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hayati — One Health Assistant</title>
+<meta name="description" content="Hayati is a One Health AI assistant for health information, symptom conversations and surveillance reporting.">
+<meta name="theme-color" content="#0d5c63">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-block">
+      <div class="brand-mark"><i class="fa-solid fa-heart-pulse"></i></div>
+      <div><div class="brand-name">Hayati</div><div class="brand-sub">One Health AI</div></div>
+    </div>
+    <button class="new-chat" id="newChatBtn"><i class="fa-solid fa-plus"></i><span>New consultation</span></button>
+    <nav class="nav-list" aria-label="Main navigation">
+      <button class="nav-item active" data-view="chat"><i class="fa-regular fa-comments"></i><span>Consultation</span></button>
+      <button class="nav-item" data-view="memory"><i class="fa-solid fa-notes-medical"></i><span>Patient memory</span></button>
+      <button class="nav-item" data-view="surveillance"><i class="fa-solid fa-chart-line"></i><span>One Health</span></button>
+    </nav>
+    <div class="sidebar-note"><i class="fa-solid fa-shield-heart"></i><div><strong>Private by design</strong><p>Use a patient profile only when you need continuity. This prototype is not for sensitive clinical records.</p></div></div>
+    <div class="sidebar-footer">Hayati v0.3 · Prototype</div>
+  </aside>
+
+  <main class="main-panel">
+    <header class="topbar">
+      <button class="mobile-menu" id="menuBtn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="top-title"><div class="eyebrow">HEALTH ASSISTANT</div><h1 id="viewTitle">Consultation</h1></div>
+      <div class="top-actions"><span class="online"><span></span> System online</span><button class="icon-top" id="profileBtn" title="Patient memory"><i class="fa-solid fa-user-injured"></i></button></div>
+    </header>
+
+    <section class="content">
+      <div class="view active" id="chatView">
+        <div class="safety-strip"><i class="fa-solid fa-circle-info"></i><span>Hayati gives general health information. It does not diagnose or replace a clinician. For an emergency, seek urgent care.</span></div>
+        <div class="chat-layout">
+          <section class="chat-card">
+            <div class="chat-header"><div><strong>Health conversation</strong><span id="sessionLabel">New consultation</span></div><span class="secure-pill"><i class="fa-solid fa-lock"></i> Local memory</span></div>
+            <div class="chat" id="chat" aria-live="polite">
+              <div class="welcome" id="welcomeState">
+                <div class="welcome-mark"><i class="fa-solid fa-stethoscope"></i></div>
+                <div class="welcome-kicker">HELLO FROM HAYATI</div>
+                <h2>What are you dealing with today?</h2>
+                <p>Tell me what you are feeling, ask about prevention, or explore a One Health concern.</p>
+                <div class="starters">
+                  <button class="starter-chip" data-msg="I'd like to check my symptoms"><i class="fa-solid fa-magnifying-glass"></i><span>Check symptoms</span></button>
+                  <button class="starter-chip" data-msg="Tell me about disease prevention and One Health"><i class="fa-solid fa-shield-virus"></i><span>Disease prevention</span></button>
+                  <button class="starter-chip" data-msg="How does One Health surveillance work?"><i class="fa-solid fa-earth-africa"></i><span>One Health</span></button>
+                </div>
+              </div>
+            </div>
+            <form class="composer" id="inputForm">
+              <div class="composer-wrap"><textarea id="messageInput" rows="1" placeholder="Describe a symptom or ask a health question…" autocomplete="off"></textarea><button type="submit" class="send-btn" id="sendBtn" disabled><i class="fa-solid fa-arrow-up"></i></button></div>
+              <div class="composer-meta"><span><i class="fa-solid fa-wand-magic-sparkles"></i> Plain-language health guidance</span><span>Enter = new line</span></div>
+            </form>
+          </section>
+          <aside class="memory-card">
+            <div class="panel-title"><div><span class="mini-label">PATIENT CONTEXT</span><h3 id="memoryName">Guest Patient</h3></div><button class="edit-btn" id="editMemoryBtn"><i class="fa-solid fa-pen"></i></button></div>
+            <div class="patient-summary"><div class="patient-avatar"><i class="fa-solid fa-user"></i></div><div><strong id="memoryStatus">Continuity memory active</strong><span id="memoryMeta">No personal details added</span></div></div>
+            <div class="memory-section"><div class="section-heading"><span>Recent symptoms</span><span class="count-badge" id="symptomCount">0</span></div><div id="symptomList" class="symptom-list"><div class="empty-mini">Symptoms mentioned in your conversations will appear here.</div></div></div>
+            <button class="outline-btn" id="openMemoryBtn"><i class="fa-solid fa-notes-medical"></i> Manage patient record</button>
+          </aside>
+        </div>
+      </div>
+
+      <div class="view" id="memoryView">
+        <div class="page-heading"><div><span class="mini-label">CONTINUITY</span><h2>Patient memory</h2><p>Keep useful patient-reported details together so future consultations have context.</p></div><button class="primary-btn" id="savePatientTop"><i class="fa-solid fa-check"></i> Save record</button></div>
+        <div class="memory-grid">
+          <section class="form-card"><div class="card-heading"><i class="fa-solid fa-id-card"></i><div><h3>Patient profile</h3><p>Optional details for continuity</p></div></div>
+            <div class="form-grid"><label>Patient name<input id="patientName" maxlength="120" placeholder="e.g. Guest Patient"></label><label>Age<input id="patientAge" type="number" min="0" max="130" placeholder="Age"></label><label>Sex<select id="patientSex"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></label><label>Location<input id="patientLocation" maxlength="120" placeholder="City / area"></label></div>
+            <label>Known conditions <input id="patientConditions" placeholder="Separate items with commas"></label>
+            <label>Allergies <input id="patientAllergies" placeholder="Separate items with commas"></label>
+            <label>Current medications <input id="patientMedications" placeholder="Separate items with commas"></label>
+            <label>Notes <textarea id="patientNotes" rows="4" maxlength="2000" placeholder="Anything useful the patient wants Hayati to remember…"></textarea></label>
+            <div class="form-warning"><i class="fa-solid fa-triangle-exclamation"></i> This is a prototype. Do not use it as a replacement for a secure clinical records system.</div>
+          </section>
+          <section class="memory-history-card">
+            <div class="card-heading"><i class="fa-solid fa-clock-rotate-left"></i><div><h3>Remembered symptoms</h3><p>Captured automatically from symptom conversations</p></div></div>
+            <div class="memory-stats"><div><strong id="memoryConsultations">0</strong><span>Consultations</span></div><div><strong id="memorySymptoms">0</strong><span>Unique symptoms</span></div><div><strong id="memoryDetails">0</strong><span>Profile details</span></div></div>
+            <div id="fullSymptomList" class="full-symptom-list"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="view" id="surveillanceView">
+        <div class="page-heading"><div><span class="mini-label">ONE HEALTH</span><h2>Surveillance overview</h2><p>A prototype signal for unusual reporting activity. It is not an outbreak detector.</p></div><button class="primary-btn" id="refreshRisk"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+        <div class="risk-grid"><div class="risk-card"><span>Signal</span><strong id="riskLevel">—</strong><small id="riskText">No analysis yet</small></div><div class="metric-card"><span>Recent reports</span><strong id="recentReports">0</strong></div><div class="metric-card"><span>Growth</span><strong id="growthReports">0%</strong></div><div class="metric-card"><span>Severe reports</span><strong id="severeReports">0%</strong></div></div>
+        <div class="info-card"><i class="fa-solid fa-earth-africa"></i><div><h3>Why One Health?</h3><p>Human health, animal health and the environment can influence one another. Hayati can store structured surveillance reports for later review by public-health teams.</p></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
