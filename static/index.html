@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+  Hayati — Health Assistant
+  Mobile-first medical chatbot UI template, split into:
+    index.html  — markup (this file)
+    style.css   — design tokens + component styles
+    script.js   — chat logic
+  Bot replies are stubbed locally in BOT_REPLIES (script.js); swap
+  botRespond() for a real API call when connecting this to a backend.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- Primary SEO -->
+<title>Hayati — Your Personal Health Assistant</title>
+<meta name="description" content="Hayati is a friendly AI health assistant. Check symptoms, get medication guidance, and book appointments in a simple, secure chat.">
+<meta name="keywords" content="health chatbot, medical assistant, symptom checker, telehealth, appointment booking, AI health assistant">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b2f4d">
+
+
+<!-- Open Graph / social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hayati — Your Personal Health Assistant">
+<meta property="og:description" content="Chat with Hayati to check symptoms, ask about medication, or book an appointment — general health guidance whenever you need it.">
+<meta property="og:site_name" content="Hayati">
+
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hayati — Your Personal Health Assistant">
+<meta name="twitter:description" content="Chat with Hayati to check symptoms, ask about medication, or book an appointment.">
+
+<!-- Fonts & icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Local stylesheet -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading screen: shown on first paint, auto-hides after the app is ready -->
+<div class="loading-screen" id="loadingScreen" role="status" aria-live="polite">
+  <div class="loading-logo"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+  <div class="loading-text">Hayati</div>
+  <div class="loading-sub">Getting things ready…</div>
+</div>
+
+<!-- App shell: fixed header + disclaimer, scrollable chat, fixed input bar -->
+<div class="app">
+
+  <!-- Header: brand identity, status, and utility actions (history / new chat) -->
+  <header>
+    <div class="avatar-ring"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+    <div class="header-text">
+      <h1 class="brand">Hayati</h1>
+      <div class="status-line"><span class="status-dot" aria-hidden="true"></span> Online now</div>
+    </div>
+    <button class="header-icon-btn" aria-label="Chat history" title="History">
+      <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+    </button>
+    <button class="header-icon-btn" aria-label="New chat" title="New chat" id="newChatBtn">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+    </button>
+    <!-- Decorative ECG line: purely visual signature, hidden from assistive tech -->
+    <div class="ecg-wrap" aria-hidden="true">
+      <svg viewBox="0 0 400 14" preserveAspectRatio="none">
+        <path d="M0,7 H60 L70,7 L78,1 L86,13 L94,7 L104,7 H160 L170,7 L178,1 L186,13 L194,7 L204,7 H400"
+          fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.4"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Medical disclaimer: always visible, not dismissible, for compliance/trust -->
+  <div class="disclaimer" role="note">
+    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+    <span>Hayati provides general health information only and is not a substitute for professional medical advice, diagnosis, or treatment. In an emergency, call your local emergency number.</span>
+  </div>
+
+  <!-- Chat transcript: welcome/starter state, then dynamically appended messages -->
+  <main class="chat" id="chat" aria-live="polite">
+
+    <!-- Empty-state welcome screen; hidden by hideWelcome() once the first message is sent -->
+    <div class="welcome" id="welcomeState">
+      <div class="badge"><i class="fa-solid fa-comment-medical" aria-hidden="true"></i></div>
+      <h2>How can I help today?</h2>
+      <p>Ask about symptoms, disease awareness, or One Health reporting. Pick a topic below to get started.</p>
+      <div class="starters">
+        <button class="starter-chip" data-msg="I'd like to check my symptoms"><i class="fa-solid fa-robot" aria-hidden="true"></i> Check symptoms</button>
+        <button class="starter-chip" data-msg="Tell me about disease prevention and One Health"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Disease awareness</button>
+        <button class="starter-chip" data-msg="I want to report a possible disease event"><i class="fa-solid fa-pills" aria-hidden="true"></i> Report a health concern</button>
+        <button class="starter-chip" data-msg="How does One Health surveillance work?"><i class="fa-solid fa-user-nurse" aria-hidden="true"></i> One Health surveillance</button>
+      </div>
+    </div>
+
+    <!-- Chat messages, typing indicator, and quick-reply chips are appended here by script.js logic -->
+  </main>
+
+  <!-- Composer: message field plus attach / voice / send actions -->
+  <form class="input-bar" id="inputForm">
+    <button type="button" class="icon-btn" aria-label="Attach photo" id="attachBtn">
+      <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+    </button>
+    <div class="field-wrap">
+      <textarea id="messageInput" rows="1" placeholder="Describe symptoms or a health concern…" autocomplete="off"></textarea>
+    </div>
+    <button type="button" class="icon-btn" aria-label="Voice input" id="micBtn">
+      <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+    </button>
+    <button type="submit" class="send-btn" id="sendBtn" disabled aria-label="Send message">
+      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </button>
+  </form>
+
+</div>
+
+<!-- Local script -->
+<script src="script.js"></script>
+
+</body>
+</html>
